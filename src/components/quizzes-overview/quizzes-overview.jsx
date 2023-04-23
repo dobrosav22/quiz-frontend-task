@@ -13,12 +13,19 @@ function QuizzesOverviewPage() {
     const navigate = useNavigate();
 
     /**A message to be displayed in the Snackbar component. */
-    const [message, setMessage] = useState('')
+    const [message, setMessage] = useState('');
 
     /**We use the react-query hook for retreiving the data from our endpoints
      * along with the loading status and possible error object.
      */
-    const { isLoading, error, data } = useQuery('quizzes', getAllQuizzes);
+    const {
+        isLoading,
+        error,
+        data
+    } = useQuery(
+        'quizzes',
+        getAllQuizzes
+    );
 
     const columns = [
         {
@@ -36,7 +43,7 @@ function QuizzesOverviewPage() {
             disableColumnMenu: true,
             align: 'right'
         },
-    ]
+    ];
 
     /**The handler for the Delete button, triggering a 
      * delete request and handling the message to be shown.
@@ -44,15 +51,15 @@ function QuizzesOverviewPage() {
     const onDeleteClick = (item) => {
         deleteQuiz(item.id).then(() => {
             queryClient.invalidateQueries('quizzes');
-            setMessage('Quiz successfully deleted.')
+            setMessage('Quiz successfully deleted.');
         }).catch((error) => {
-            setMessage(error.message)
+            setMessage(error.message);
         })
     }
 
     /**A handler for the navigation buttons. */
     const onNavigateClick = (path) => {
-        navigate(path)
+        navigate(path);
     }
 
     /**Since our rows have an action column with buttons, this function handles
@@ -78,7 +85,7 @@ function QuizzesOverviewPage() {
                 </IconButton>
             </Stack>
         )
-    }
+    };
 
     /**For the list, we need only the ID and the name from the data 
      * we receive, and the we add the action object that is our 
@@ -98,17 +105,17 @@ function QuizzesOverviewPage() {
                     )
             }
         })
-    }
+    };
 
     /**Once we get the data, we invoke the generateListData function, but we
      * also check is there is any, so in case of an error, there are no rows.
      */
-    const listData = generateListData(data ?? [])
+    const listData = generateListData(data ?? []);
 
     const buttonProps = {
         text: "Add new Quiz",
         onClick: () => onNavigateClick('/quiz-form/new')
-    }
+    };
 
     return (
         <ContentContainer
@@ -127,6 +134,6 @@ function QuizzesOverviewPage() {
             />
         </ContentContainer>
     )
-}
+};
 
-export default QuizzesOverviewPage
+export default QuizzesOverviewPage;

@@ -10,25 +10,37 @@ import PropTypes from 'prop-types';
  */
 function QuestionForm(props) {
 
-    const { options, onSubmit } = props;
+    const {
+        options,
+        onSubmit
+    } = props;
 
     /**A toggler value for either displaying the new 
      * existing question form.
      */
-    const [newQuestion, setNewQuestion] = useState(true)
+    const [newQuestion, setNewQuestion] = useState(true);
 
     /**We keep this state as the autocomplete value to be dispatched to the 
     * parent component on Add existing question button click.
     */
-    const [currentQuestion, setCurrentQuestion] = useState(null)
+    const [currentQuestion, setCurrentQuestion] = useState(null);
 
     /**A validator schema for the question object. */
     const questionSchema = yup.object().shape({
-        question: yup.string().required('Question is required'),
-        answer: yup.string().required('Answer is required'),
+        question: yup
+            .string()
+            .required('Question is required'),
+        answer: yup
+            .string()
+            .required('Answer is required'),
     });
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors }
+    } = useForm({
         resolver: yupResolver(questionSchema)
     });
 
@@ -36,23 +48,23 @@ function QuestionForm(props) {
      * component and clearing the inputs for new data to be added.
      */
     const onSubmitClick = (data) => {
-        onSubmit(data)
-        setCurrentQuestion(null)
+        onSubmit(data);
+        setCurrentQuestion(null);
         reset();
-    }
+    };
 
     /**A handler for the switch component. */
     const onFormControlChange = (e) => {
         setNewQuestion(e.target.checked)
-    }
+    };
 
     /**Handler function for the Autocomplete component change. */
     const onAutocompleteChange = (e, value) => {
         setCurrentQuestion(value)
-    }
+    };
 
     /**Overriding the default comparison of the autocomplete input. */
-    const autocompleteCompareValue = (option, value) => option.label === value.label
+    const autocompleteCompareValue = (option, value) => option.label === value.label;
 
     /**Generating the options object for the Autocomplete */
     function generateOptions(options) {
@@ -60,10 +72,11 @@ function QuestionForm(props) {
             {
                 label: item.question,
                 value: item
-            }))
-    }
+            }
+        ))
+    };
 
-    const autocompleteOptions = generateOptions(options ?? [])
+    const autocompleteOptions = generateOptions(options ?? []);
 
     return (
         <Stack spacing={5}>
@@ -97,7 +110,7 @@ function QuestionForm(props) {
                             variant="contained"
                             type="submit"
                         >
-                            Save new question
+                            Add new question
                         </Button>
                     </Stack>
                 </form>
@@ -140,6 +153,9 @@ function QuestionForm(props) {
 export default QuestionForm;
 
 QuestionForm.propTypes = {
+    /**Array of options for the Autocomplete, containing
+     * question objects with the question and an answer.
+     */
     options: PropTypes.arrayOf(
         PropTypes.shape(
             {
@@ -156,6 +172,6 @@ QuestionForm.propTypes = {
                 )
             }
         )
-    ),
-    onSave: PropTypes.func
-}
+    ).isRequired,
+    onSubmit: PropTypes.func.isRequired
+};

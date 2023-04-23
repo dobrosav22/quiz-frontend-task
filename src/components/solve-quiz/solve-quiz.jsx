@@ -11,15 +11,22 @@ import QuestionCard from 'components/question-card/question-card';
 function SolveQuizPage() {
 
     const { id } = useParams();
-    const navigate = useNavigate()
-    const [message, setMessage] = useState()
+    const navigate = useNavigate();
+    const [message, setMessage] = useState();
 
-    const { isLoading, error, data } = useQuery(`quiz-${id}`, () => getQuizById(id));
+    const {
+        isLoading,
+        error,
+        data
+    } = useQuery(
+        `quiz-${id}`,
+        () => getQuizById(id)
+    );
 
     const buttonProps = {
         text: 'Back to all Quizzes',
         onClick: () => navigate('/')
-    }
+    };
 
     return (
         <ContentContainer
@@ -30,9 +37,9 @@ function SolveQuizPage() {
             isLoading={isLoading}
             error={error}
         >
-            <QuestionCard questions={data?.questions}/>
+            <QuestionCard questions={data?.questions??[]} />
         </ContentContainer>
     )
 };
 
-export default SolveQuizPage
+export default SolveQuizPage;

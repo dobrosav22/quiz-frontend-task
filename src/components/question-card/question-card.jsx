@@ -3,14 +3,17 @@ import React, { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import PropTypes from 'prop-types';
 
+/**Styling for the IconButton, since by defalut it 
+ * fill the entire container width and height.
+ */
 const StyledIconButton = styled(IconButton)(() => ({
     height: '3rem',
     width: '3rem'
-}))
+}));
 
 const QuestionContainer = styled(Stack)(() => ({
     width: '100%'
-}))
+}));
 
 /**Question card component. It is used for displaying the question with the
  * answer that can be be shown/hidden on a button click. The component allows
@@ -28,20 +31,20 @@ function QuestionCard(props) {
      */
     useEffect(() => {
         setShowAnswer(false)
-    }, [currentQuestion])
+    }, [currentQuestion]);
 
     /**Handlers for increasing and decreasing the question index. */
     const nextQuestion = () => {
         setCurrentQuestion(currentQuestion + 1)
-    }
+    };
 
     const prevQuestion = () => {
         setCurrentQuestion(currentQuestion - 1)
-    }
+    };
 
     const toggleAnswerVisibility = () => {
         setShowAnswer(!showAnswer)
-    }
+    };
 
     return (
         <Stack
@@ -84,11 +87,12 @@ function QuestionCard(props) {
             </StyledIconButton>
         </Stack>
     )
-}
+};
 
 export default QuestionCard;
 
 QuestionCard.propTypes = {
+    /**Array of question objects. */
     questions: PropTypes.arrayOf(
         PropTypes.shape(
             {
@@ -100,15 +104,5 @@ QuestionCard.propTypes = {
                 ])
             }
         )
-    )
-}
-
-QuestionCard.defaultProps={
-    questions:[
-        {
-            question:"There are no questions for this quiz.",
-            answer:'',
-            id:0
-        }
-    ]
-}
+    ).isRequired
+};

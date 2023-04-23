@@ -100,15 +100,15 @@ export function makeServer({ environment = 'development' } = {}) {
               return newQuestion
             }
             return question
-          })
+          });
 
         newQuestions
           .forEach((question) => {
             schema.questions
               .create(question)
-          })
+          });
 
-        return quizQuestions
+        return quizQuestions;
       }
 
       this.get('/quizzes', (schema) => {
@@ -117,7 +117,7 @@ export function makeServer({ environment = 'development' } = {}) {
 
       this.get('/quizzes/:id', (schema, request) => {
         const id = request.params.id;
-        return schema.quizzes.find(id).attrs
+        return schema.quizzes.find(id).attrs;
       });
 
       this.post('/quizzes', (schema, request) => {
@@ -125,8 +125,7 @@ export function makeServer({ environment = 'development' } = {}) {
 
         const { questions, ...rest } = attrs;
         const quizQuestions = handleNewQuestions(schema, questions);
-
-        const quiz = schema.quizzes.create({ ...rest, quizQuestions });
+        const quiz = schema.quizzes.create({ ...rest, questions: quizQuestions });
         return quiz;
       });
 
@@ -135,7 +134,7 @@ export function makeServer({ environment = 'development' } = {}) {
         const attrs = JSON.parse(request.requestBody);
 
         const { questions, ...rest } = attrs;
-        const quizQuestions = handleNewQuestions(schema, questions)
+        const quizQuestions = handleNewQuestions(schema, questions);
 
         const quiz = schema.quizzes.find(id);
         quiz.update({ ...rest, questions: quizQuestions });

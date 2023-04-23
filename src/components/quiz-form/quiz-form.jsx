@@ -15,8 +15,8 @@ import { createQuiz } from 'api/endpoints';
 function QuizFormPage() {
 
     const queryClient = useQueryClient();
-    const navigate = useNavigate()
-    const [message, setMessage] = useState()
+    const navigate = useNavigate();
+    const [message, setMessage] = useState();
 
     /**The id parameter can either be 'new' or an actuall id. */
     const { id } = useParams();
@@ -24,12 +24,12 @@ function QuizFormPage() {
     /**Based on the id value, we differentiate between handlers
      * and titles for creating an new quiz or updating one.
      */
-    const isNewQuizForm = id === 'new'
+    const isNewQuizForm = id === 'new';
 
     const initialData = {
         name: '',
         questions: []
-    }
+    };
 
     const {
         isLoading: questionsLoading,
@@ -56,7 +56,7 @@ function QuizFormPage() {
      */
     const isLoading = questionsLoading || quizLoading;
 
-    const [error, setError] = useState(null)
+    const [error, setError] = useState(null);
 
     /**Just in case there is an error, we merge the two request errors
      * and send it in a similar shape to others, to pass the validation.
@@ -69,23 +69,23 @@ function QuizFormPage() {
                         message: `${quizError && quizError?.message} 
                         ${questionsError && questionsError?.message}`
                     }
-                )
+                );
             }
         }
-    }, [isLoading, quizError,questionsError])
+    }, [isLoading, quizError, questionsError]);
 
-    const [payloadData, setPayloadData] = useState(initialData)
+    const [payloadData, setPayloadData] = useState(initialData);
 
     useEffect(() => {
         if (quizData) {
-            setPayloadData(quizData)
+            setPayloadData(quizData);
         }
     }, [quizData])
 
     const buttonProps = {
         text: 'Back to all Quizzes',
         onClick: () => navigate('/')
-    }
+    };
 
     /**In the questions list, we can remove questions, this
      * handler is passed to a delete button to filter out
@@ -98,9 +98,9 @@ function QuizFormPage() {
                 ...payloadData,
                 questions: questions
                     .filter(item => item.id !== id)
-            })
-        setMessage('Question removed.')
-    }
+            });
+        setMessage('Question removed.');
+    };
 
     /**If we want to add questions, then we use this handler, and 
      * based on whether the question is new or added from the existing
@@ -122,16 +122,16 @@ function QuizFormPage() {
                         }
                     ]
             });
-        setMessage('Question added.')
-    }
+        setMessage('Question added.');
+    };
 
     /**Once we decide to actually send our data to the server, we need to remove
      * the temporary ids we have on new questions, so the server can differentiate
      * them and know they are new questions to be added to the database.
      */
-    function removeIDsFromNewQuestions(data) {
+    function removeIDsFromNewQuestions() {
 
-        const { questions } = data;
+        const { questions } = payloadData;
 
         const filteredQuestions = questions.map(
             ({ id, ...rest }) => {
@@ -141,40 +141,40 @@ function QuizFormPage() {
             });
 
         return {
-            ...data,
+            ...payloadData,
             questions: filteredQuestions
         };
-    }
+    };
 
     /**The Save button click handler. We first check which request do we need to send. */
     const onSave = () => {
         if (isNewQuizForm)
             createQuiz(
-                removeIDsFromNewQuestions(payloadData))
+                removeIDsFromNewQuestions())
                 .then(() => {
-                    setMessage('Quiz succesfully created.')
+                    setMessage('Quiz succesfully created.');
                     setTimeout(() => {
                         navigate('/')
                     }, 3000);
                 })
                 .catch((error) => {
-                    setMessage(error.message)
-                })
+                    setMessage(error.message);
+                });
         else
             updateQuiz(
                 id,
-                removeIDsFromNewQuestions(payloadData))
+                removeIDsFromNewQuestions())
                 .then(() => {
-                    setMessage('Quiz succesfully updated.')
+                    setMessage('Quiz succesfully updated.');
                     setTimeout(() => {
                         queryClient.invalidateQueries(`quiz-${id}`);
                         navigate('/')
                     }, 3000);
                 })
                 .catch((error) => {
-                    setMessage(error.message)
-                })
-    }
+                    setMessage(error.message);
+                });
+    };
 
     /**Columns for the DataGrid, with the delete icon render 
      * stored directly in the renderCell prop.
@@ -208,7 +208,7 @@ function QuizFormPage() {
             hideSortIcons: true,
             disableColumnMenu: true,
         },
-    ]
+    ];
 
     return (
         <ContentContainer
@@ -250,12 +250,13 @@ function QuizFormPage() {
                         variant='contained'
                         fullWidth
                         onClick={onSave}
+                        disabled={!payloadData.name}
                     >
                         Save
                     </Button>
                 </Stack>
                 <QuestionForm
-                    options={questionsData}
+                    options={questionsData??[]}
                     onSubmit={onSubmit}
                 />
                 <Typography variant='h5'>
@@ -272,4 +273,4 @@ function QuizFormPage() {
     )
 };
 
-export default QuizFormPage
+export default QuizFormPage;
